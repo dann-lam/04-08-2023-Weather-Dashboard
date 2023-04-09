@@ -8,6 +8,7 @@ let searchBtn = document.getElementById("location-search-btn");
 //Take API data and display it.
 let buildForecast = (name, country, state, wind, humidity, temp, icon) => {
         // http://openweathermap.org/img/wn/${icon}@2x.png
+
 }
 //Fetch the weather at location.
 let getWeather = (name, country, lat, lon, state) => {

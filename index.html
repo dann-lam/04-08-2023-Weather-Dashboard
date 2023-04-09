@@ -16,15 +16,34 @@
         Header goes here
     </header>
     <section>
-        <article>
-            <form class="form-search">
-                <input type="text" class="input-medium search-query" id="location-search-query">
-                <button type="submit" class="btn" id="location-search-btn">Search</button>
-            </form>
-        </article>
-        <article id="current-weather">
+        <div class="searchbox-favorites">
+            <article>
+                <form class="form-search">
+                    <input type="text" class="input-medium search-query" id="location-search-query">
+                    <button type="submit" class="btn" id="location-search-btn">Search</button>
+                </form>
+            </article>
+            <hr>
+            <article id="favorites">
+                <!-- Dynamically posted favorites here. -->
+            </article>
+        </div>
+        <div class="weather-display">
+            <article id="current-weather">
+                <h1 id="city-date-icon"></h1>
+                <div id="weather-info">
+                    <!-- Dynamically posted weather info for one day here. -->
+                </div>
+            </article>
+            <article id="five-day-forecast">
+                <h2>
 
-        </article>
+                </h2>
+                <div>
+
+                </div>
+            </article>
+        </div>
     </section>
 
 
