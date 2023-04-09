@@ -50,7 +50,7 @@ The following image shows the web application's appearance and functionality:
 >
 > * A repository that only includes starter code
 
-This Challenge is graded based on the following criteria:
+This Challenge is graded based on the following criteria: 
 
 ### Technical Acceptance Criteria: 40%
 
