@@ -3,11 +3,62 @@ temp_apikey = "9ce2af1a4de92e18eddd61ab40ca5e62";
 // //DOM elements interacted with.
 let searchQuery = document.getElementById("location-search-query");
 let searchBtn = document.getElementById("location-search-btn");
+let weatherInfo = document.getElementById("weather-info");
+let cityDateIcon = document.getElementById("city-date-icon");
+let favorites = document.getElementById("favorites");
+//function looks through the localStorage, and sees if
 
+
+
+
+//Split this function into two, because we want to pass on some of its functionality to the 5 day forecast API call.
+let addToFavorites = (name) => {
+    //Build a button
+    let liEle = document.createElement('li');
+    liEle.innerHTML = name;
+    favorites.appendChild(liEle);
+    // localStorage.setItem("cityName", name)
+    //add the button to local storage
+}
+//Make API call for 5 day weather.
+let buildFiveDay = (lat, lon) => {
+
+    let url = `api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${temp_apikey}`
+
+    fetch(url, {
+        //possible additional fetch options here.
+    })
+    .then (function (response){
+        return response.json();
+    })
+    .then (function (data) {
+        console.log("Five Day Data");
+        console.log(data);
+    })
+}
 
 //Take API data and display it.
 let buildForecast = (name, country, state, wind, humidity, temp, icon) => {
-        // http://openweathermap.org/img/wn/${icon}@2x.png
+    //Gets back a large string based on date.
+    let today = new Date(Date.now()).toLocaleString();
+    "E.G: 4/9/2023, 04:43:50"
+    //Splits the string on the ,
+    today = today.split(",")
+    //Change adds in the city name, the date with only the m/d/yyy format, and our image based on icon ID from the weather API.
+    cityDateIcon.innerHTML = `${name}, ${state}, ${country}` + ` (${today[0]}) `+ `<img src="http://openweathermap.org/img/wn/${icon}@2x.png">`
+
+    //Creates our paragraph elements and appends them to the weatherInfo box.
+    let tempEle = document.createElement("p");
+    tempEle.innerHTML = `Temp: ${temp}F`
+    let windEle = document.createElement("p");
+    windEle.innerHTML = `Wind: ${wind} MPH`
+    let humidEle = document.createElement("p");
+    humidEle.innerHTML = `Humidity: ${humidity}%`
+    weatherInfo.appendChild(tempEle);
+    weatherInfo.appendChild(windEle)
+    weatherInfo.appendChild(humidEle)
+
+    //Build weather button here.
 
 }
 //Fetch the weather at location.
@@ -23,12 +74,15 @@ let getWeather = (name, country, lat, lon, state) => {
     })
     .then(function (data){
         //Get relevent data
+        console.log(data);
         let icon = data.weather[0].icon;
         let wind = data.wind.speed;
         let humidity = data.main.humidity;
         let temp = data.main.temp;
         return buildForecast(name, country, state, wind, humidity, temp, icon);
     })
+    addToFavorites(name);
+    return buildFiveDay(lat, lon)
 
 }
 // //GOAL: Take in a input search and apply it to a dropdown menu
