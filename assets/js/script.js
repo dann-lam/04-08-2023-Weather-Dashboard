@@ -6,16 +6,40 @@ let searchBtn = document.getElementById("location-search-btn");
 let weatherInfo = document.getElementById("weather-info");
 let cityDateIcon = document.getElementById("city-date-icon");
 let favorites = document.getElementById("favorites");
+let forecastContainer = document.getElementById("forecast-container");
 //function looks through the localStorage, and sees if
 
 
+//Take in five of the days, build cards for each one, and then append them to the five day forecase container div.
+let displayFiveDay = (data) => {
+    //Loop through the first 5 forecasts.
+    for(let i = 0; i < 5; i++) {
+        //Let the currItem be the i number on the list
+        let currItem = data.list[i]
+        console.log(currItem);
+        //Takes the date inside (E.G. 2023-04-10 06:00:00 and splits it by the space, and then splits it by dashes. turns it into: ["2023-04-10", "06:00:00"], splitting it again outputs ["2023", "04", "10"]
+        let formatDate = currItem.dt_txt.split(" ")[0].split("-");
+        //Takes the elements in the array, rearranges elements and spits out a new string
+        let outputDate = `${formatDate[1]}-${formatDate[2]}-${formatDate[0]}`
+        //Key into each element and save them to a variable string.
+        let tempURL = `http://openweathermap.org/img/wn/${currItem.weather[0].icon}@2x.png`
+        let temp = `Temp: ${currItem.main.temp} F`
+        let wind = `Wind: ${currItem.wind.speed} MPH`
+        let humidity = `Humidity: ${currItem.main.humidity} %`
+        //Create the card to contain the data.
+        let forecastCard = document.createElement("div");
 
+    }
+}
 
 //Split this function into two, because we want to pass on some of its functionality to the 5 day forecast API call.
 let addToFavorites = (name) => {
     //Build a button
     let liEle = document.createElement('li');
-    liEle.innerHTML = name;
+    let liBtn = document.createElement('button');
+    liEle.appendChild(liBtn);
+    liBtn.innerText = name;
+    liEle.style.listStyle = "none";
     favorites.appendChild(liEle);
     // localStorage.setItem("cityName", name)
     //add the button to local storage
@@ -23,7 +47,7 @@ let addToFavorites = (name) => {
 //Make API call for 5 day weather.
 let buildFiveDay = (lat, lon) => {
 
-    let url = `api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${temp_apikey}`
+    let url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&appid=${temp_apikey}`
 
     fetch(url, {
         //possible additional fetch options here.
@@ -33,7 +57,7 @@ let buildFiveDay = (lat, lon) => {
     })
     .then (function (data) {
         console.log("Five Day Data");
-        console.log(data);
+        return displayFiveDay(data);
     })
 }
 
