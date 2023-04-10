@@ -7,32 +7,95 @@ let weatherInfo = document.getElementById("weather-info");
 let cityDateIcon = document.getElementById("city-date-icon");
 let favorites = document.getElementById("favorites");
 let forecastContainer = document.getElementById("forecast-container");
+let forecastHeader = document.getElementById("five-day-forecast-header")
 //function looks through the localStorage, and sees if
 
 
+
+//
+
 //Take in five of the days, build cards for each one, and then append them to the five day forecase container div.
+    //This loop goes through all objects until it finds 5 items next day at 3PM. This is not ideal but a naive solution for the time being.
+    //Once I find 5 of them and append them, I exit the function.
 let displayFiveDay = (data) => {
-    //Loop through the first 5 forecasts.
-    for(let i = 0; i < 5; i++) {
-        //Let the currItem be the i number on the list
+    let count = 0;
+    //Logic to check if the Five Day Forecast exists or not already.
+    //If it does, let it be.
+    if(forecastHeader.innerHTML){
+        console.log("I should've added text.");
+        forecastHeader.innerText = "Five Day Forecast: ";
+    }
+    //Clear out the container each time we click.
+    forecastContainer.innerHTML = '';
+    for(let i = 0; i < data.list.length; i++) {
+        //If I loop through, and the count has reached 5, we stop.
+        if(count == 5){
+            return;
+        }
         let currItem = data.list[i]
-        console.log(currItem);
-        //Takes the date inside (E.G. 2023-04-10 06:00:00 and splits it by the space, and then splits it by dashes. turns it into: ["2023-04-10", "06:00:00"], splitting it again outputs ["2023", "04", "10"]
-        let formatDate = currItem.dt_txt.split(" ")[0].split("-");
-        //Takes the elements in the array, rearranges elements and spits out a new string
-        let outputDate = `${formatDate[1]}-${formatDate[2]}-${formatDate[0]}`
-        //Key into each element and save them to a variable string.
-        let tempURL = `http://openweathermap.org/img/wn/${currItem.weather[0].icon}@2x.png`
-        let temp = `Temp: ${currItem.main.temp} F`
-        let wind = `Wind: ${currItem.wind.speed} MPH`
-        let humidity = `Humidity: ${currItem.main.humidity} %`
-        //Create the card to contain the data.
-        let forecastCard = document.createElement("div");
+        // Takes the date inside, splits it by the space inside.
+        //Looks at the time, splits that, and looks at the hour.
+        //(E.G. [15,00,00])
+        //
+        let timeFinder = currItem.dt_txt.split(" ")[1].split(":")[0];
+        //If we find the next day at 3PM
+        if(timeFinder == 15){
+            count++
+            //Takes the date inside (E.G. 2023-04-10 06:00:00 and splits it by the space, and then splits it by dashes. turns it into: ["2023-04-10", "06:00:00"], splitting it again outputs ["2023", "04", "10"]
+
+            let formatDate = currItem.dt_txt.split(" ")[0].split("-");
+
+            //Takes the elements in the array, rearranges elements and spits out a new string
+
+            let outputDate = `${formatDate[1]}-${formatDate[2]}-${formatDate[0]}`
+            //Key into each element and save them to a variable string.
+            let tempURL = `http://openweathermap.org/img/wn/${currItem.weather[0].icon}@2x.png`
+            let temp = `Temp: ${currItem.main.temp} F`
+            let wind = `Wind: ${currItem.wind.speed} MPH`
+            let humidity = `Humidity: ${currItem.main.humidity} %`
+
+            //Create the card to contain the data and append it to the forecast container.
+            let forecastCard = document.createElement("div");
+            forecastCard.className = "forecast-card";
+            forecastContainer.appendChild(forecastCard);
+
+            let cardHeader = document.createElement("h2");
+            cardHeader.innerText = outputDate;
+            forecastCard.appendChild(cardHeader);
+
+            let weatherIcon = document.createElement("img");
+            weatherIcon.src = tempURL;
+            forecastCard.appendChild(weatherIcon);
+
+            let tempP = document.createElement("p");
+            let windP = document.createElement("p");
+            let humidityP = document.createElement("p");
+
+            tempP.innerText = temp;
+            windP.innerText = wind;
+            humidityP.innerText = humidity;
+
+            forecastCard.appendChild(tempP);
+            forecastCard.appendChild(windP);
+            forecastCard.appendChild(humidityP);
+
+            }
+
 
     }
+    //On the off off chance we did not somehow find 5.
+    console.log("Somehow I did not find 5.");
+    return;
 }
 
-//Split this function into two, because we want to pass on some of its functionality to the 5 day forecast API call.
+//When I click on search
+//The name is added to an array inside of localstorage.
+//The max number of items in that array should be 5.
+//If the array is full, kick out the last name on that array,
+//Move all of my items in the array down one, and then add in the new item.
+//Redraw the buttons
+//The buttons will call getcityCoords on that button's text.
+//Need event listeners for generated buttons.
 let addToFavorites = (name) => {
     //Build a button
     let liEle = document.createElement('li');
@@ -46,7 +109,7 @@ let addToFavorites = (name) => {
 }
 //Make API call for 5 day weather.
 let buildFiveDay = (lat, lon) => {
-
+    // api.openweathermap.org/data/2.5/forecast/daily?lat=44.34&lon=10.99&cnt=7&appid=
     let url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&appid=${temp_apikey}`
 
     fetch(url, {
@@ -64,6 +127,7 @@ let buildFiveDay = (lat, lon) => {
 //Take API data and display it.
 let buildForecast = (name, country, state, wind, humidity, temp, icon) => {
     //Gets back a large string based on date.
+    weatherInfo.innerHTML = '';
     let today = new Date(Date.now()).toLocaleString();
     "E.G: 4/9/2023, 04:43:50"
     //Splits the string on the ,
@@ -106,6 +170,7 @@ let getWeather = (name, country, lat, lon, state) => {
         return buildForecast(name, country, state, wind, humidity, temp, icon);
     })
     addToFavorites(name);
+
     return buildFiveDay(lat, lon)
 
 }
@@ -137,6 +202,7 @@ let getCityCoords = (event) => {
           let cityLat = data[0].lat
           let cityLon = data[0].lon
           let cityState = data[0].state
+          //getWeather starts on line 143.
           return getWeather(cityName, cityCountry, cityLat, cityLon, cityState)
         });
     } else {
@@ -148,31 +214,5 @@ let getCityCoords = (event) => {
 }
 
 
-
+//Listen for a click on the search button.
 searchBtn.addEventListener("click", getCityCoords);
-
-
-
-
-// //wrap elements interact with DOM in .ready
-
-
-// //When I type into the search option
-
-// //I want to be able to see a dropdown of 5 options based on the search that most closely match our city
-
-// //When I click on the match, it should automatically swap my search input to that.
-
-// //When I click on the search option, it should bring up the weather API results for that city.
-
-// //Five day forecaster is
-
-// //
-
-
-
-// // http://api.openweathermap.org/geo/1.0/direct?q={city name},{state code},{country code}&limit={limit}&appid={API key}
-
-// //I want to use the country name, and the lat longs given to me from that response
-// //Weather data based on lat long query:
-// // https://openweathermap.org/current#geocoding
