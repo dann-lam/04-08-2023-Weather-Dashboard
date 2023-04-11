@@ -2,3 +2,82 @@
     background-color: darkgreen;
     color: white;
 }
+
+.hero-header {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    font-size: larger;
+    background: darkgreen;
+    color: white;
+}
+
+#main-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px;
+}
+
+.searchbox-favorites {
+    padding: 20px;
+}
+
+.weather-display {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    min-width: 790px;
+    min-height: 633px;
+    margin: 40px;
+
+}
+
+#forecast-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+#search-box {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid black;
+    padding: 20px;
+}
+
+#favorites {
+    padding: 40px;
+    border: 1px solid black;
+}
+
+#favorites li {
+    padding: 5px;
+}
+
+#current-weather {
+    padding: 20px;
+    min-width: 750px;
+    min-height: 268px;
+    border: 1px solid black;
+    margin: 20px;
+    background-color: antiquewhite;
+}
+
+#location-search-btn {
+    border: 1px solid black;
+    color: white;
+    background-color: darkgreen;
+}
+
+#five-day-forecast {
+    border: 1px solid black;
+    min-width: 750px;
+    min-height: 325px;
+    width: 870px;
+    padding: 20px;
+    margin: 20px;
+    background-color: antiquewhite;
+}

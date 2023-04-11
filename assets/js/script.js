@@ -80,7 +80,7 @@ let localStorageSwitch = (text) => {
 let displayFiveDay = (data) => {
     let count = 0;
     //See if I have to initialize an header.
-    if(forecastHeader.innerHTML){
+    if(!forecastHeader.innerText){
 
         forecastHeader.innerText = "Five Day Forecast: ";
     }
@@ -116,9 +116,11 @@ let displayFiveDay = (data) => {
             //Create the card to contain the data and append it to the forecast container.
             let forecastCard = document.createElement("div");
             forecastCard.className = "forecast-card";
+            forecastCard.style.border = "1px solid black";
+            forecastCard.style.padding = "10px";
             forecastContainer.appendChild(forecastCard);
 
-            let cardHeader = document.createElement("h2");
+            let cardHeader = document.createElement("h4");
             cardHeader.innerText = outputDate;
             forecastCard.appendChild(cardHeader);
 
