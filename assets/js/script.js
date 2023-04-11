@@ -175,7 +175,7 @@ let buildForecast = (name, country, state, wind, humidity, temp, icon) => {
     //Splits the string on the ,
     today = today.split(",")
     //Change adds in the city name, the date with only the m/d/yyy format, and our image based on icon ID from the weather API.
-    cityDateIcon.innerHTML = `${name}, ${state}, ${country}` + ` (${today[0]}) `+ `<img src="http://openweathermap.org/img/wn/${icon}@2x.png">`
+    cityDateIcon.innerHTML = `${name}, ${state}, ${country}` + ` (${today[0]}) `+ `<img src="https://openweathermap.org/img/wn/${icon}@2x.png">`
 
     //Creates our paragraph elements and appends them to the weatherInfo box.
     let tempEle = document.createElement("p");
@@ -233,7 +233,7 @@ let getCityCoords = (event, cityName) => {
     //Ensure we have something
     if(searchQueryText){
         //fetch city
-        fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${searchQueryText}&limit=5&appid=${temp_apikey}`, {
+        fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${searchQueryText}&limit=5&appid=${temp_apikey}`, {
 
         //Fetch options here if need be.
         //We should probably add in some error handlers later.
