@@ -175,6 +175,8 @@ let buildForecast = (name, country, state, wind, humidity, temp, icon) => {
     //Splits the string on the ,
     today = today.split(",")
     //Change adds in the city name, the date with only the m/d/yyy format, and our image based on icon ID from the weather API.
+
+    //Some countries do not have states, this is a very simplistic switch to either include it or remove it from our return.
     if (state == undefined){
         cityDateIcon.innerHTML = `${name}, ${country}` + ` (${today[0]}) `+ `<img src="https://openweathermap.org/img/wn/${icon}@2x.png">`
     } else {

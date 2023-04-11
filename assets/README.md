@@ -1,102 +1,72 @@
-# 06 Server-Side APIs: Weather Dashboard
+# Weather Dashboard
 
-## Your Task
+## Technology Used
 
-Third-party APIs allow developers to access their data and functionality by making requests with specific parameters to a URL. Developers are often tasked with retrieving data from another application's API and using it in the context of their own. Your challenge is to build a weather dashboard that will run in the browser and feature dynamically updated HTML and CSS.
+| Technology Used         | Resource URL           |
+| ------------- |:-------------:|
+| HTML    | [https://developer.mozilla.org/en-US/docs/Web/HTML](https://developer.mozilla.org/en-US/docs/Web/HTML) |
+| CSS     | [https://developer.mozilla.org/en-US/docs/Web/CSS](https://developer.mozilla.org/en-US/docs/Web/CSS)      |
+| Git | [https://git-scm.com/](https://git-scm.com/)     |
+| JS  | [https://www.javascript.com/](https://www.javascript.com/)     |
+| DayJS  | [https://day.js.org/](https://day.js.org/)     |
+| OpenWeather  | [https://openweathermap.org/api](https://openweathermap.org/api)     |
 
-Use the [5 Day Weather Forecast](https://openweathermap.org/forecast5) to retrieve weather data for cities. The base URL should look like the following: `https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}`. After registering for a new API key, you may need to wait up to 2 hours for that API key to activate.
 
-**Hint**: Using the 5 Day Weather Forecast API, you'll notice that you will need to pass in coordinates instead of just a city name. Using the OpenWeatherMap APIs, how could we retrieve geographical coordinates given a city name?
+## Description
 
-You will use `localStorage` to store any persistent data. For more information on how to work with the OpenWeather API, refer to the [Full-Stack Blog on how to use API keys](https://coding-boot-camp.github.io/full-stack/apis/how-to-use-api-keys).
+[Visit the Deployed Site](https://dann-lam.github.io/04-02-2023-Quiz-Homework/)
 
-## User Story
+This is a weather site that returns the forecast for the day, as well as a five day forecast.
 
-```
-AS A traveler
-I WANT to see the weather outlook for multiple cities
-SO THAT I can plan a trip accordingly
-```
+When clicked, your city will be saved onto a favorites list that is stored on the local storage. You can have up to 5 favorites at the moment, with the last city on the list dropped for the newest one.
 
-## Acceptance Criteria
+This was created to exercise the fundamentals of Javascript fetch requests for APIs, at the moment the 5 day forecast will return information forecasts for 3PM specifically.
 
-```
-GIVEN a weather dashboard with form inputs
-WHEN I search for a city
-THEN I am presented with current and future conditions for that city and that city is added to the search history
-WHEN I view current weather conditions for that city
-THEN I am presented with the city name, the date, an icon representation of weather conditions, the temperature, the humidity, and the wind speed
-WHEN I view future weather conditions for that city
-THEN I am presented with a 5-day forecast that displays the date, an icon representation of weather conditions, the temperature, the wind speed, and the humidity
-WHEN I click on a city in the search history
-THEN I am again presented with current and future conditions for that city
-```
+It practices some of the other Javasript fundamentals, selecting of IDs, event listeners for buttons, local storage of items in favorites, dynamic object creation and appending, and logic for handling items coming from API calls.
 
-## Mock-Up
+Future features when I come back to this: Currently the API returns the top 5 search results for a given city. It would be nice if the search created a dropdown that returned those searches, so that if you choose a city with a name with the same name at a different location, the user is given that choice.
 
-The following image shows the web application's appearance and functionality:
+The styling is a bit scuffed, but it's functional for our purposes.
 
-![The weather app includes a search option, a list of cities, and a five-day forecast and current weather conditions for Atlanta.](./Assets/06-server-side-apis-homework-demo.png)
 
-## Grading Requirements
+## Table of Contents
 
-> **Note**: If a Challenge assignment submission is marked as “0”, it is considered incomplete and will not count towards your graduation requirements. Examples of incomplete submissions include the following:
->
-> * A repository that has no code
->
-> * A repository that includes a unique name but nothing else
->
-> * A repository that includes only a README file but nothing else
->
-> * A repository that only includes starter code
 
-This Challenge is graded based on the following criteria: 
+* [Usage](#usage)
+* [Learning Points](#learning-points)
+* [Credits](#credits)
+* [License](#license)
 
-### Technical Acceptance Criteria: 40%
 
-* Satisfies all of the above acceptance criteria plus the following:
+## Usage
 
-    * Uses the OpenWeather API to retrieve weather data.
+Simply insert your city in the search box, and click on the search box.
 
-    * Uses `localStorage` to store persistent data.
+This will display your forecast along with a five day forecast.
 
-### Deployment: 32%
+The search will be saved as a button, you can save up to five buttons before the last favorite in the list is dropped in favor for a new one.
 
-* Application deployed at live URL.
 
-* Application loads with no errors.
 
-* Application GitHub URL submitted.
+![Image of Application](https://raw.githubusercontent.com/dann-lam/04-08-2023-Weather-Dashboard/main/assets/better_demo.gif)
 
-* GitHub repository that contains application code.
 
-### Application Quality: 15%
 
-* Application user experience is intuitive and easy to navigate.
+## Learning Points
 
-* Application user interface style is clean and polished.
+I got great practice working with API requests and navigating the objects that they return.
 
-* Application resembles the mock-up functionality provided in the Challenge instructions.
+Another thing I apppreciated was working with some of the challenges of working with objects in localStorage and the some of the logic behind how the buttons work.
 
-### Repository Quality: 13%
+I currently have somewhat of an unorthodox solution for grabbing the days from the five day forecast, and they're split into 3 hour segments. It's essentially looking for that day at specifically 3PM. This can be seen here:
 
-* Repository has a unique name.
+![Image of Code]()
 
-* Repository follows best practices for file structure and naming conventions.
 
-* Repository follows best practices for class/id naming conventions, indentation, quality comments, etc.
+## Credits
 
-* Repository contains multiple descriptive commit messages.
+https://openweathermap.org/forecast5
 
-* Repository contains quality readme file with description, screenshot, and link to deployed application.
+## License
 
-## Review
-
-You are required to submit BOTH of the following for review:
-
-* The URL of the functional, deployed application.
-
-* The URL of the GitHub repository. Give the repository a unique name and include a readme describing the project.
-
-- - -
-© 2023 edX Boot Camps LLC. Confidential and Proprietary. All Rights Reserved.
+MIT License
