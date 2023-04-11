@@ -9,10 +9,43 @@ let favorites = document.getElementById("favorites");
 let forecastContainer = document.getElementById("forecast-container");
 let forecastHeader = document.getElementById("five-day-forecast-header")
 //function looks through the localStorage, and sees if
+//There are already up to five elements inside of an array.
+//if the array is "full" (5).
+//Then remove the last button from the list
+//move each element down
+//insert the new one into the front of the list
+//redraw the list.
 
+//If there are elements in the local storage, then I want to get them.
+let getLocalStorage = () => {
+    if
+    localStorage.setItem("favorites");
+}
+redrawFavoritesDisplay(newBtnLi, newBtn){
+    for(let i = 0; i < localStorage.favorites.length; i++){
 
+    }
+};
 
-//
+let localStorageSwitch = (text, newBtnLi, newBtn) => {
+
+    if(!localStorage.favorites){
+        localStorage.favorites = [text];
+        redrawFavoritesDisplay(newBtnLi, newBtn);
+    } else if (localStorage.favorites.length == 5){
+        localStorage.favorites.pop();
+        localStorage.favorites.unshift(text);
+        redrawFavoritesDisplay(newBtnLi, newBtn);
+    }
+
+}
+let buttonBuilder = (text) => {
+    let newBtnLi = document.createElement("li");
+    let newBtn = document.createElement("button");
+    newBtn.innerText = text;
+    newBtnLi.style.listStyle = "none";
+    localStorageSwitch(text, newBtnLi, newBtn);
+}
 
 //Take in five of the days, build cards for each one, and then append them to the five day forecase container div.
     //This loop goes through all objects until it finds 5 items next day at 3PM. This is not ideal but a naive solution for the time being.
@@ -169,8 +202,16 @@ let getWeather = (name, country, lat, lon, state) => {
         let temp = data.main.temp;
         return buildForecast(name, country, state, wind, humidity, temp, icon);
     })
-    addToFavorites(name);
 
+    //Check if localStorage is full or not.
+    //If localStorage is FULL (returns true or false)
+    //Then remove the last and append the new thing
+    // If it's NOT full, then we can simply unshift a name into the array.
+    if(localStorageFullChecker){
+        localStorageRemoveLastAppendNew(name);
+    } else {
+
+    }
     return buildFiveDay(lat, lon)
 
 }
@@ -185,12 +226,13 @@ let getCityCoords = (event) => {
     let searchQueryText = searchQuery.value.trim();
     //Ensure we have something
     if(searchQueryText){
+        buttonBuilder(searchQueryText);
         //fetch city
         fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${searchQueryText}&limit=5&appid=${temp_apikey}`, {
 
         //Fetch options here if need be.
         //We should probably add in some error handlers later.
-      })
+          })
         .then(function (response) {
           //parse response to useful
           return response.json();
@@ -210,9 +252,19 @@ let getCityCoords = (event) => {
         console.log("Please input something in the text box!")
     }
 
+    //
 
 }
 
+// let fuel = fetch("https://www.fueleconomy.gov/ws/rest/ympg/shared/ympgVehicle/26425", { headers: { Accept: 'application/json',}})
+// .then(function (response) {
+
+//      promise = response.json();
+//     return promise;
+// })
+// .then(function (data){
+//     console.log(data);
+// });
 
 //Listen for a click on the search button.
 searchBtn.addEventListener("click", getCityCoords);
