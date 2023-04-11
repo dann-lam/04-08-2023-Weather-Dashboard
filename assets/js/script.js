@@ -9,17 +9,21 @@ let favorites = document.getElementById("favorites");
 let forecastContainer = document.getElementById("forecast-container");
 let forecastHeader = document.getElementById("five-day-forecast-header")
 
-
+//Draw buttons from local storage
 let redrawFavoritesDisplay = () => {
+    //Reset favorites
     favorites.innerHTML = '';
+    //parses value string from favorites key assigns to variable
     let storageFavorites = JSON.parse(localStorage.getItem("favorites"))
+    //if something is in there
     if(storageFavorites){
+    //go through array, create list and button, append to favoritesID DOM
     for(let i = 0; i < storageFavorites.length; i++){
+
         let currItem = storageFavorites[i];
-        console.log("localStorage.getItem is")
-        console.log(storageFavorites)
+
         let liEle = document.createElement('li');
-        console.log("currItemIs:")
+
         let liBtn = document.createElement('button');
         liEle.appendChild(liBtn);
         liBtn.innerText = currItem;
@@ -27,37 +31,45 @@ let redrawFavoritesDisplay = () => {
         liEle.style.listStyle = "none";
         favorites.appendChild(liEle);
         }
-    } else {
-        console.log("Nothing found in favorites localStorage")
     }
-
     return
 };
 
-
+//handle items in storage, initialize if none, remove last item and insert new if full, insert if has space
 let localStorageSwitch = (text) => {
-let entries = JSON.parse(localStorage.getItem("favorites")) || [];
-    if(entries.includes(text)){
-        return;
-    }
-    if(!entries){
-        entries.push(text)
-        localStorage.setItem("favorites", JSON.stringify(entries));
-        console.log("In localStorage favorites");
-        console.log(entries);
-        // localStorage.getItem("favorites").push(text);
-        return redrawFavoritesDisplay();
-    } else if (entries.length == 5){
+    //get items from storage, if empty, create empty array, assign to var
+    let entries = JSON.parse(localStorage.getItem("favorites")) || [];
+        //If cityName already inside return
+        if(entries.includes(text)){
+            return;
+        }
+        //if nothing inside (is empty array)
+        if(!entries){
+            //add cityname to array
+            entries.push(text)
+            //save to storage
+            localStorage.setItem("favorites", JSON.stringify(entries));
 
-        entries.pop();
-        entries.unshift(text);
-        localStorage.setItem("favorites", JSON.stringify(entries))
-        return redrawFavoritesDisplay();
-    } else {
-        entries.unshift(text);
-        localStorage.setItem("favorites", JSON.stringify(entries))
-        return redrawFavoritesDisplay();
-    }
+            return redrawFavoritesDisplay();
+
+            //if we have 5 items (full)
+        } else if (entries.length == 5){
+            //remove last item
+            entries.pop();
+            //enter new item (shifts the rest of cities down)
+            entries.unshift(text);
+
+            localStorage.setItem("favorites", JSON.stringify(entries))
+
+            return redrawFavoritesDisplay();
+        } else {
+            //array array not full, add city
+            entries.unshift(text);
+
+            localStorage.setItem("favorites", JSON.stringify(entries))
+
+            return redrawFavoritesDisplay();
+        }
 
 }
 
@@ -67,13 +79,12 @@ let entries = JSON.parse(localStorage.getItem("favorites")) || [];
     //Once I find 5 of them and append them, I exit the function.
 let displayFiveDay = (data) => {
     let count = 0;
-    //Logic to check if the Five Day Forecast exists or not already.
-    //If it does, let it be.
+    //See if I have to initialize an header.
     if(forecastHeader.innerHTML){
-        console.log("I should've added text.");
+
         forecastHeader.innerText = "Five Day Forecast: ";
     }
-    //Clear out the container each time we click.
+    //Clear out the container each time we search for city
     forecastContainer.innerHTML = '';
     for(let i = 0; i < data.list.length; i++) {
         //If I loop through, and the count has reached 5, we stop.
@@ -136,18 +147,10 @@ let displayFiveDay = (data) => {
     return;
 }
 
-//When I click on search
-//The name is added to an array inside of localstorage.
-//The max number of items in that array should be 5.
-//If the array is full, kick out the last name on that array,
-//Move all of my items in the array down one, and then add in the new item.
-//Redraw the buttons
-//The buttons will call getcityCoords on that button's text.
-//Need event listeners for generated buttons.
 
 //Make API call for 5 day weather.
 let buildFiveDay = (lat, lon) => {
-    // api.openweathermap.org/data/2.5/forecast/daily?lat=44.34&lon=10.99&cnt=7&appid=
+
     let url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&appid=${temp_apikey}`
 
     fetch(url, {
@@ -157,7 +160,6 @@ let buildFiveDay = (lat, lon) => {
         return response.json();
     })
     .then (function (data) {
-        console.log("Five Day Data");
         return displayFiveDay(data);
     })
 }
@@ -188,6 +190,7 @@ let buildForecast = (name, country, state, wind, humidity, temp, icon) => {
 
 }
 //Fetch the weather at location.
+//other information is passed to "remember" them.
 let getWeather = (name, country, lat, lon, state) => {
     //units set to imperial why? Because.
     fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=imperial&appid=${temp_apikey}`, {
@@ -200,32 +203,28 @@ let getWeather = (name, country, lat, lon, state) => {
     })
     .then(function (data){
         //Get relevent data
-        console.log(data);
         let icon = data.weather[0].icon;
         let wind = data.wind.speed;
         let humidity = data.main.humidity;
         let temp = data.main.temp;
+        //Build the single day forecast
         return buildForecast(name, country, state, wind, humidity, temp, icon);
     })
 
-    //Check if localStorage is full or not.
-    //If localStorage is FULL (returns true or false)
-    //Then remove the last and append the new thing
-    // If it's NOT full, then we can simply unshift a name into the array.
+    //send the name to localStorageSwitch for button creation and localstorage
     localStorageSwitch(name);
+    //build the 5 day forecaster
     return buildFiveDay(lat, lon)
 
 }
-// //GOAL: Take in a input search and apply it to a dropdown menu
-// //With our search results.
-// //When I click on the search button...
-// Right now we're grabbing the first result. We should modify this in the future to include a dropdwon menu of our 5 results so that someone could choose.
+//Gets lat longs for inputted city.
 let getCityCoords = (event, cityName) => {
     //Prevent default behavior of button clicked.
     event.preventDefault();
 
     //Get text from queryBox and trim it.
     let searchQueryText = searchQuery.value.trim();
+    //condition only met If favorites button is clicked, we'll assign it to be what should be searched instead.
     if(cityName){
         searchQueryText = cityName;
     }
@@ -248,7 +247,7 @@ let getCityCoords = (event, cityName) => {
           let cityLat = data[0].lat
           let cityLon = data[0].lon
           let cityState = data[0].state
-          //getWeather starts on line 143.
+          //fetch the weather information
           return getWeather(cityName, cityCountry, cityLat, cityLon, cityState)
         });
     } else {
@@ -260,22 +259,13 @@ let getCityCoords = (event, cityName) => {
 
 }
 
-// let fuel = fetch("https://www.fueleconomy.gov/ws/rest/ympg/shared/ympgVehicle/26425", { headers: { Accept: 'application/json',}})
-// .then(function (response) {
-
-//      promise = response.json();
-//     return promise;
-// })
-// .then(function (data){
-//     console.log(data);
-// });
-
 //Listen for a click on the search button.
 searchBtn.addEventListener("click", getCityCoords);
-
+//Initializes favorites display upon refresh
 redrawFavoritesDisplay();
-
+//Event delegator
 document.querySelector('body').addEventListener('click', function(event) {
+    //This even fires on favorited buttons.
 if(event.target.className === "storedCity"){
     getCityCoords(event, event.target.innerText)
 }
