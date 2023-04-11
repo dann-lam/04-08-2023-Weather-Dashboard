@@ -175,7 +175,12 @@ let buildForecast = (name, country, state, wind, humidity, temp, icon) => {
     //Splits the string on the ,
     today = today.split(",")
     //Change adds in the city name, the date with only the m/d/yyy format, and our image based on icon ID from the weather API.
-    cityDateIcon.innerHTML = `${name}, ${state}, ${country}` + ` (${today[0]}) `+ `<img src="https://openweathermap.org/img/wn/${icon}@2x.png">`
+    if (state == undefined){
+        cityDateIcon.innerHTML = `${name}, ${country}` + ` (${today[0]}) `+ `<img src="https://openweathermap.org/img/wn/${icon}@2x.png">`
+    } else {
+        cityDateIcon.innerHTML = `${name}, ${state}, ${country}` + ` (${today[0]}) `+ `<img src="https://openweathermap.org/img/wn/${icon}@2x.png">`
+    }
+
 
     //Creates our paragraph elements and appends them to the weatherInfo box.
     let tempEle = document.createElement("p");
