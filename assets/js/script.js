@@ -8,44 +8,59 @@ let cityDateIcon = document.getElementById("city-date-icon");
 let favorites = document.getElementById("favorites");
 let forecastContainer = document.getElementById("forecast-container");
 let forecastHeader = document.getElementById("five-day-forecast-header")
-//function looks through the localStorage, and sees if
-//There are already up to five elements inside of an array.
-//if the array is "full" (5).
-//Then remove the last button from the list
-//move each element down
-//insert the new one into the front of the list
-//redraw the list.
 
-//If there are elements in the local storage, then I want to get them.
-let getLocalStorage = () => {
-    if
-    localStorage.setItem("favorites");
-}
-redrawFavoritesDisplay(newBtnLi, newBtn){
-    for(let i = 0; i < localStorage.favorites.length; i++){
 
+let redrawFavoritesDisplay = () => {
+    favorites.innerHTML = '';
+    let storageFavorites = JSON.parse(localStorage.getItem("favorites"))
+    if(storageFavorites){
+    for(let i = 0; i < storageFavorites.length; i++){
+        let currItem = storageFavorites[i];
+        console.log("localStorage.getItem is")
+        console.log(storageFavorites)
+        let liEle = document.createElement('li');
+        console.log("currItemIs:")
+        let liBtn = document.createElement('button');
+        liEle.appendChild(liBtn);
+        liBtn.innerText = currItem;
+        liBtn.className = "storedCity";
+        liEle.style.listStyle = "none";
+        favorites.appendChild(liEle);
+        }
+    } else {
+        console.log("Nothing found in favorites localStorage")
     }
+
+    return
 };
 
-let localStorageSwitch = (text, newBtnLi, newBtn) => {
 
-    if(!localStorage.favorites){
-        localStorage.favorites = [text];
-        redrawFavoritesDisplay(newBtnLi, newBtn);
-    } else if (localStorage.favorites.length == 5){
-        localStorage.favorites.pop();
-        localStorage.favorites.unshift(text);
-        redrawFavoritesDisplay(newBtnLi, newBtn);
+let localStorageSwitch = (text) => {
+let entries = JSON.parse(localStorage.getItem("favorites")) || [];
+    if(entries.includes(text)){
+        return;
+    }
+    if(!entries){
+        entries.push(text)
+        localStorage.setItem("favorites", JSON.stringify(entries));
+        console.log("In localStorage favorites");
+        console.log(entries);
+        // localStorage.getItem("favorites").push(text);
+        return redrawFavoritesDisplay();
+    } else if (entries.length == 5){
+
+        entries.pop();
+        entries.unshift(text);
+        localStorage.setItem("favorites", JSON.stringify(entries))
+        return redrawFavoritesDisplay();
+    } else {
+        entries.unshift(text);
+        localStorage.setItem("favorites", JSON.stringify(entries))
+        return redrawFavoritesDisplay();
     }
 
 }
-let buttonBuilder = (text) => {
-    let newBtnLi = document.createElement("li");
-    let newBtn = document.createElement("button");
-    newBtn.innerText = text;
-    newBtnLi.style.listStyle = "none";
-    localStorageSwitch(text, newBtnLi, newBtn);
-}
+
 
 //Take in five of the days, build cards for each one, and then append them to the five day forecase container div.
     //This loop goes through all objects until it finds 5 items next day at 3PM. This is not ideal but a naive solution for the time being.
@@ -129,17 +144,7 @@ let displayFiveDay = (data) => {
 //Redraw the buttons
 //The buttons will call getcityCoords on that button's text.
 //Need event listeners for generated buttons.
-let addToFavorites = (name) => {
-    //Build a button
-    let liEle = document.createElement('li');
-    let liBtn = document.createElement('button');
-    liEle.appendChild(liBtn);
-    liBtn.innerText = name;
-    liEle.style.listStyle = "none";
-    favorites.appendChild(liEle);
-    // localStorage.setItem("cityName", name)
-    //add the button to local storage
-}
+
 //Make API call for 5 day weather.
 let buildFiveDay = (lat, lon) => {
     // api.openweathermap.org/data/2.5/forecast/daily?lat=44.34&lon=10.99&cnt=7&appid=
@@ -179,7 +184,7 @@ let buildForecast = (name, country, state, wind, humidity, temp, icon) => {
     weatherInfo.appendChild(windEle)
     weatherInfo.appendChild(humidEle)
 
-    //Build weather button here.
+
 
 }
 //Fetch the weather at location.
@@ -207,11 +212,7 @@ let getWeather = (name, country, lat, lon, state) => {
     //If localStorage is FULL (returns true or false)
     //Then remove the last and append the new thing
     // If it's NOT full, then we can simply unshift a name into the array.
-    if(localStorageFullChecker){
-        localStorageRemoveLastAppendNew(name);
-    } else {
-
-    }
+    localStorageSwitch(name);
     return buildFiveDay(lat, lon)
 
 }
@@ -219,14 +220,17 @@ let getWeather = (name, country, lat, lon, state) => {
 // //With our search results.
 // //When I click on the search button...
 // Right now we're grabbing the first result. We should modify this in the future to include a dropdwon menu of our 5 results so that someone could choose.
-let getCityCoords = (event) => {
+let getCityCoords = (event, cityName) => {
     //Prevent default behavior of button clicked.
     event.preventDefault();
+
     //Get text from queryBox and trim it.
     let searchQueryText = searchQuery.value.trim();
+    if(cityName){
+        searchQueryText = cityName;
+    }
     //Ensure we have something
     if(searchQueryText){
-        buttonBuilder(searchQueryText);
         //fetch city
         fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${searchQueryText}&limit=5&appid=${temp_apikey}`, {
 
@@ -268,3 +272,11 @@ let getCityCoords = (event) => {
 
 //Listen for a click on the search button.
 searchBtn.addEventListener("click", getCityCoords);
+
+redrawFavoritesDisplay();
+
+document.querySelector('body').addEventListener('click', function(event) {
+if(event.target.className === "storedCity"){
+    getCityCoords(event, event.target.innerText)
+}
+})
