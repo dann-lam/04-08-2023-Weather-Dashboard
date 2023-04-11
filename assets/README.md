@@ -60,7 +60,9 @@ Another thing I apppreciated was working with some of the challenges of working 
 
 I currently have somewhat of an unorthodox solution for grabbing the days from the five day forecast, and they're split into 3 hour segments. It's essentially looking for that day at specifically 3PM. This can be seen here:
 
-![Image of Code]()
+But hey, it works. I think ideally next time I use the Unix code, I feel as if this would be a much cleaner official solution.
+
+![Image of Code](https://raw.githubusercontent.com/dann-lam/04-08-2023-Weather-Dashboard/main/assets/funky_code.png)
 
 
 ## Credits
